@@ -17,11 +17,11 @@ code {
 }
 
 .light-theme {
-  background-color: aquamarine;
+  background-color: #D8D8D8;
   color: black;
 }
 
 .dark-theme {
-  background-color: dimgray;
+  background-color: #262626;
   color: white;
 }

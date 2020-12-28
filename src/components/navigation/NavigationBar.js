@@ -6,7 +6,7 @@ export const NavigationBar = () => {
     const { theme, toggleTheme } = useGlobalContext();
 
     return (
-        <Navbar collapseOnSelect expand="lg" bg={theme === 'light-theme' ? "dark" : "light"} variant={theme === 'light-theme' ? "dark" : "light"} sticky="top">
+        <Navbar collapseOnSelect expand="lg" bg={theme === 'dark-theme' ? "dark" : "light"} variant={theme === 'dark-theme' ? "dark" : "light"} sticky="top">
             <Navbar.Brand href="/">Jason's Personal Website</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
@@ -14,8 +14,8 @@ export const NavigationBar = () => {
                     <Nav.Item><Nav.Link href="/">Home</Nav.Link></Nav.Item>
                     <Nav.Item><Nav.Link href="/about">About</Nav.Link></Nav.Item>
                     <NavDropdown title="Probability" id="collapsible-nav-dropdown">
-                        <NavDropdown.Item href="#">Bernoulli</NavDropdown.Item>
-                        <NavDropdown.Item href="#">Binomial</NavDropdown.Item>
+                        <NavDropdown.Item href="/gacha">Gacha Simulator</NavDropdown.Item>
+                        <NavDropdown.Item href="#">Something</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
                 <Form inline>
