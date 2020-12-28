@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useGlobalContext } from '../../context';
 import { gachaData, totalWeight } from '../../data/gachaData';
 import Highcharts from 'highcharts';
@@ -8,6 +9,14 @@ export const GachaSim = () => {
     const { theme } = useGlobalContext();
     const [trials, setTrials] = useState(0);
     const [results, setResults] = useState([]);
+    const [runningTotals, setRunningTotals] = useState([]);
+
+    const onFormSubmit = e => {
+        e.preventDefault()
+        const formData = new FormData(e.target),
+            formDataObj = Object.fromEntries(formData.entries());
+        handleRolls(formDataObj["myInput"]);
+    }
 
     const getResult = (threshold) => {
         let cumulative = 0;
@@ -18,7 +27,7 @@ export const GachaSim = () => {
             }
         }
     };
-    
+
     const handleRolls = (rolls) => {
         if (isNaN(rolls) || rolls < 0) {
             rolls = 10;
@@ -47,6 +56,24 @@ export const GachaSim = () => {
         setResults(tempResults);
     }, [trials]);
 
+    useEffect(() => {
+        let tempResults = runningTotals;
+        for (let i = 0; i < results.length; i++) {
+            let item = results[i];
+            const found = runningTotals.find(char => char.name === item.name);
+            if (found) {
+                found["y"] += item.y;
+            } else {
+                tempResults.push({
+                    name: item.name,
+                    y: item.y
+                });
+            }
+        }
+        setRunningTotals(tempResults);
+        // eslint-disable-next-line
+    }, [results]);
+
     const options = {
         chart: {
             type: "pie"
@@ -59,14 +86,38 @@ export const GachaSim = () => {
                 data: results
             }
         ]
-    }
+    };
+
+    const options2 = {
+        chart: {
+            type: "pie"
+        },
+        title: {
+            text: "Gacha Pulls - Total"
+        },
+        series: [
+            {
+                data: runningTotals
+            }
+        ]
+    };
 
     return (
-        <div className={theme}>
+        <div className={`px-2 ${theme}`}>
             <h3>Gacha Simulation</h3>
-            <button onClick={() => handleRolls(10)}>Make Roll</button>
-            <button onClick={resetPulls}>Reset Roll</button>
+            <InputGroup className='mb-3'>
+                <Form inline onSubmit={onFormSubmit}>
+                    <Form.Control type="number" name="myInput" />
+                    <InputGroup.Append>
+                        <Button variant="secondary" type="submit">Make Pulls</Button>
+                    </InputGroup.Append>
+                </Form>
+            </InputGroup>
+
+            <Button variant="info" onClick={resetPulls}>Reset Roll</Button>
+            <hr />
             <PieChart highcharts={Highcharts} options={options} />
+            <PieChart highcharts={Highcharts} options={options2} />
         </div>
     );
 }

@@ -5,7 +5,7 @@ export const About = () => {
     const {theme} = useGlobalContext();
 
     return (
-        <div className={theme}>
+        <div className={`px-2 ${theme}`}>
             <p>About Page</p>
         </div>
     );

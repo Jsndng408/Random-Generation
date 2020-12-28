@@ -5,7 +5,7 @@ export const NoMatch = () => {
     const {theme} = useGlobalContext();
 
     return (
-        <div className={theme}>
+        <div className={`px-2 ${theme}`}>
             <p>You reached a dead end.</p>
         </div>
     );
