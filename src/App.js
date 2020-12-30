@@ -4,7 +4,7 @@ import { NavigationBar } from './components/navigation/NavigationBar';
 import { Home } from './components/static/Home';
 import { About } from './components/static/About';
 import { NoMatch } from './components/static/NoMatch';
-import { GachaSim } from './components/simulation/GachaSim';
+import GachaSim from './components/simulation/GachaSim';
 
 export default function App() {
     return (
