@@ -1,127 +1,74 @@
-import React, { useState, useContext, useEffect, useReducer } from 'react';
-import reducer from './reducer';
-import { gachaData } from './data/objectGachaData';
-
-const [light, dark] = ['light-theme', 'dark-theme'];
-
-const getStorageTheme = () => {
-    let theme = light;
-    if (localStorage.getItem('theme')) {
-        theme = localStorage.getItem('theme');
-    }
-    return theme;
-}
+import React, { useState, useContext, useEffect } from 'react';
+import { GachaData } from './components/simulation/GachaData';
 
 const AppContext = React.createContext();
 
-const initialState = {
-    loading: false,
-    characters: gachaData,
-    total: 0,
-    amount: 0,
-};
-
 const AppProvider = ({ children }) => {
-    const [theme, setTheme] = useState(getStorageTheme());
-    const [modalState, setModalState] = useState(false);
-    const [state, dispatch] = useReducer(reducer, initialState);
-    const [data, setData] = useState(gachaData);
-
-    /* Theme-related functions */
-    function toggleTheme() {
-        if (theme === light) {
-            setTheme(dark);
-        } else {
-            setTheme(light);
-        }
-    }
-
-    useEffect(() => {
-        document.documentElement.className = theme;
-        localStorage.setItem("theme", theme);
-    }, [theme]);
-
-    /* Modal window-related functions */
-    const openModal = () => {
-        setModalState(true);
-    }
-
-    const closeModal = () => {
-        setModalState(false);
-    }
+    const [data, setData] = useState(GachaData);
+    const [total, setTotal] = useState(200);
+    const [amount, setAmount] = useState(8);
 
     /* Reducer-related functions */
     const clearCharacters = () => {
-        dispatch({
-            type: 'CLEAR_CHARACTERS'
-        });
+        setData([]);
+        setTotal(0);
+        setAmount(0);
     };
 
     const addCharacter = (id, name, weight) => {
-        dispatch({
-            type: 'ADD',
-            payload: {
-                id: id,
-                name: name,
-                weight: (isNaN(weight) ? 1 : weight)
-            }
+        let tempData = data;
+        tempData.push({
+            id: id,
+            name: name,
+            weight: (isNaN(weight) ? 1 : weight)
         });
-        dispatch({
-            type: 'GET_TOTALS'
-        });
+        console.log(tempData);
+        setData(tempData.filter((item) => item.weight > 0));
     }
 
     const removeCharacter = (id) => {
-        dispatch({
-            type: 'REMOVE',
-            payload: id
-        });
+        let tempData = data.filter((item) => item.id !== id);
+        setData(tempData);
     };
 
     const increaseWeight = (id) => {
-        dispatch({
-            type: 'INCREASE',
-            payload: id
-        });
+        let tempData = data;
+        let item = tempData.find((item) => item.id === id);
+        item.weight += 1;
+        setData(tempData.filter((item) => item.weight > 0));
     };
 
     const decreaseWeight = (id) => {
-        dispatch({
-            type: 'DECREASE',
-            payload: id
-        });
-    };
-
-    const toggleWeight = (id, type) => {
-        dispatch({
-            type: 'TOGGLE_AMOUNT',
-            payload: { id, type }
-        });
+        let tempData = data;
+        let item = tempData.find((item) => item.id === id);
+        item.weight -= 1;
+        setData(tempData.filter((item) => item.weight > 0));
     };
 
     /* Each time characters and/or their weights change */
     useEffect(() => {
-        dispatch({
-            type: 'GET_TOTALS'
-        });
-    }, [state.characters]);
+        let tempAmt = 0, tempTotal = 0;
+        for (let i = 0; i < data.length; i++) {
+            tempAmt += 1;
+            tempTotal += data[i].weight;
+        }
+        setTotal(tempTotal);
+        setAmount(tempAmt);
+    }, [data]);
 
     return (
         <AppContext.Provider value={{
-            ...state,
-            theme,
-            modalState,
             data,
+            total,
+            amount,
             setData,
-            toggleTheme,
-            openModal,
-            closeModal,
+            setTotal,
+            setAmount,
             clearCharacters,
             addCharacter,
             removeCharacter,
             increaseWeight,
             decreaseWeight,
-            toggleWeight,
         }}>
             {children}
         </AppContext.Provider>
