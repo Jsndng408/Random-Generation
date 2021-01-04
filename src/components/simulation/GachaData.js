@@ -7,5 +7,5 @@ export const GachaData = [
     {id: 5, name: 'Rattata', weight: 70},
     {id: 6, name: 'Pidgey', weight: 70},
     {id: 7, name: 'Ho-oh', weight: 1},
-    {id: 8, name: 'Mewtwo', weight: 2}
+    {id: 8, name: 'Cobalion', weight: 2}
 ];

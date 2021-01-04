@@ -8,7 +8,7 @@ const AppProvider = ({ children }) => {
     const [total, setTotal] = useState(200);
     const [amount, setAmount] = useState(8);
 
-    /* Reducer-related functions */
+    /* Gacha Item-related functions */
     const clearCharacters = () => {
         setData([]);
         setTotal(0);
@@ -20,9 +20,8 @@ const AppProvider = ({ children }) => {
         tempData.push({
             id: id,
             name: name,
-            weight: (isNaN(weight) ? 1 : weight)
+            weight: ((isNaN(weight) || weight <= 0) ? 1 : weight)
         });
-        console.log(tempData);
         setData(tempData.filter((item) => item.weight > 0));
     }
 
@@ -45,7 +44,7 @@ const AppProvider = ({ children }) => {
         setData(tempData.filter((item) => item.weight > 0));
     };
 
-    /* Each time characters and/or their weights change */
+    /* Each time characters' weights change */
     useEffect(() => {
         let tempAmt = 0, tempTotal = 0;
         for (let i = 0; i < data.length; i++) {

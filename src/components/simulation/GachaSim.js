@@ -7,11 +7,15 @@ import PieChart from 'highcharts-react-official';
 
 export const GachaSim = () => {
     const { data, total, amount, clearCharacters, addCharacter } = useGlobalContext();
+
     const [trials, setTrials] = useState(0);
     const [results, setResults] = useState([]);
     const [runningTotals, setRunningTotals] = useState([]);
+
     const [newChar, setNewChar] = useState("");
     const [newWeight, setNewWeight] = useState(1);
+
+    /* ~~~~~~~~~~~~~~~~~~~ Pulling-related functions ~~~~~~~~~~~~~~~~~~~ */
 
     // Handle submission for pulling
     const onFormSubmit = e => {
@@ -19,6 +23,30 @@ export const GachaSim = () => {
         const formData = new FormData(e.target),
             formDataObj = Object.fromEntries(formData.entries());
         handleRolls(formDataObj["myInput"]);
+    }
+
+    const renderRollForm = () => {
+        if (data.length <= 0) {
+            return (
+                <div className='text-center'>
+                    <h5>Nothing to roll</h5>
+                    <h5>Use the Add Item form below to add some Characters</h5>
+                </div>
+            )
+        } else {
+            return (
+                <InputGroup className='mb-3'>
+                    <Form inline className="m-auto" onSubmit={onFormSubmit}>
+                        <label>
+                            <span>Enter number of Items you want to Pull: </span><Form.Control type="number" name="myInput" />
+                        </label>
+                        <InputGroup.Append>
+                            <Button variant="secondary" type="submit">Make Pulls</Button>
+                        </InputGroup.Append>
+                    </Form>
+                </InputGroup>
+            );
+        }
     }
 
     // Pick out the character that will be rolled for
@@ -110,8 +138,16 @@ export const GachaSim = () => {
         ]
     };
 
+    /* ~~~~~~~~~~~~~~~~~~~ Item-related functions ~~~~~~~~~~~~~~~~~~~ */
+
     // Add new character to the data
     function processNewItem() {
+        let existingItem = data.some((item) => item.name === newChar);
+        if (existingItem) {
+            alert("An item with this name already exists")
+            return;
+        }
+
         data.sort(function (a, b) {
             return a.id - b.id
         });
@@ -124,15 +160,15 @@ export const GachaSim = () => {
 
     const renderInsertForm = () => {
         return (
-            <Form.Group className='m-0'>
-                <h4 className="text-center">Add New Item</h4>
+            <Form.Group className='m-0 insert-form'>
+                <h4>Add New Item</h4>
                 <Form.Control type='text' placeholder='Character Name' value={newChar}
                     onChange={e => setNewChar(e.target.value)} />
                 <hr />
                 <Form.Control type='number' value={newWeight}
                     onChange={e => setNewWeight(e.target.value)} />
                 <hr />
-                <Button variant='outline-success' onClick={processNewItem}>Add new Character</Button>
+                <Button className="btn btn-success" onClick={processNewItem}>Add new Character</Button>
             </Form.Group>
         )
     }
@@ -177,19 +213,11 @@ export const GachaSim = () => {
     return (
         <div className="character-pulls">
             <h3 className="text-center">Gacha Simulation</h3>
-            <InputGroup className='mb-3'>
-                <Form inline className="m-auto" onSubmit={onFormSubmit}>
-                    <label>
-                        <span>Enter number of Items you want to Pull: </span><Form.Control type="number" name="myInput"  />
-                    </label>
-                    <InputGroup.Append>
-                        <Button variant="secondary" type="submit">Make Pulls</Button>
-                    </InputGroup.Append>
-                </Form>
-            </InputGroup>
+            {renderRollForm()}
 
             <hr />
             <PieChart highcharts={Highcharts} options={options} />
+            <hr />
             <PieChart highcharts={Highcharts} options={options2} />
 
             <hr />
