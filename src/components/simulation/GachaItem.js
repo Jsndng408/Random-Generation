@@ -1,8 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import { useGlobalContext } from '../../context';
 
 const GachaItem = ({ id, name, weight }) => {
-    const { removeCharacter, increaseWeight, decreaseWeight, total } = useGlobalContext();
+    const { updateCharacter, removeCharacter, increaseWeight, decreaseWeight, total } = useGlobalContext();
+    const [displayUpdateForm, setDisplayUpdateForm] = useState(false);
+    const [newName, setNewName] = useState(name);
+    const [newWeight, setNewWeight] = useState(weight);
+
+    const processUpdatedItem = () => {
+        updateCharacter(id, newName, parseInt(newWeight));
+    }
+
+    const renderUpdateForm = () => {
+        if (displayUpdateForm) {
+            return (
+                <Form>
+                    <Form.Group className='m-0'>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control type='text' value={newName}
+                            onChange={e => setNewName(e.target.value)} />
+                    </Form.Group>
+                    <Form.Group className='m-0'>
+                        <Form.Label>Weight</Form.Label>
+                        <Form.Control type='number' value={newWeight}
+                            onChange={e => setNewWeight(e.target.value)} />
+                    </Form.Group>
+                    <Button className="btn btn-success" onClick={processUpdatedItem}>Make Changes</Button>
+                </Form>
+            );
+        }
+    }
 
     return (
         <article className='character-item'>
@@ -24,9 +52,13 @@ const GachaItem = ({ id, name, weight }) => {
             <div className='column'>
                 <h4>{name}</h4>
                 <h4 className="weight">{parseFloat((weight / total) * 100).toFixed(4)}%</h4>
+                <button className='btn btn-secondary item-btn' onClick={() => setDisplayUpdateForm(!displayUpdateForm)}>
+                    Update
+                </button>
                 <button className='btn btn-danger item-btn' onClick={() => removeCharacter(id)}>
                     Remove
                 </button>
+                {renderUpdateForm()}
             </div>
         </article>
     )

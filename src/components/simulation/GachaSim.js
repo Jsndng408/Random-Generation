@@ -162,11 +162,17 @@ export const GachaSim = () => {
         return (
             <Form.Group className='m-0 insert-form'>
                 <h4>Add New Item</h4>
-                <Form.Control type='text' placeholder='Character Name' value={newChar}
-                    onChange={e => setNewChar(e.target.value)} />
+                <label>
+                    Name:
+                    <Form.Control type='text' placeholder='Character Name' value={newChar}
+                        onChange={e => setNewChar(e.target.value)} />
+                </label>
                 <hr />
-                <Form.Control type='number' value={newWeight}
-                    onChange={e => setNewWeight(e.target.value)} />
+                <label>
+                    Weight:
+                    <Form.Control type='number' value={newWeight}
+                        onChange={e => setNewWeight(e.target.value)} />
+                </label>
                 <hr />
                 <Button className="btn btn-success" onClick={processNewItem}>Add new Character</Button>
             </Form.Group>

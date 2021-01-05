@@ -23,6 +23,14 @@ const AppProvider = ({ children }) => {
             weight: ((isNaN(weight) || weight <= 0) ? 1 : weight)
         });
         setData(tempData.filter((item) => item.weight > 0));
+    };
+
+    const updateCharacter = (id, name, weight) => {
+        let tempData = data;
+        let itemToUpdate = tempData.find((element) => element.id === id);
+        itemToUpdate.name = name;
+        itemToUpdate.weight = ((isNaN(weight) || weight <= 0) ? 1 : weight);
+        setData(tempData.filter((item) => item.weight > 0));
     }
 
     const removeCharacter = (id) => {
@@ -65,6 +73,7 @@ const AppProvider = ({ children }) => {
             setAmount,
             clearCharacters,
             addCharacter,
+            updateCharacter,
             removeCharacter,
             increaseWeight,
             decreaseWeight,
